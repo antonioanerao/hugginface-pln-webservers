@@ -43,10 +43,10 @@
     <h1 class="text-lg text-white sm:text-2xl">
       Transcreva seus áudios em texto
     </h1>
-    <form method="post" action="index.php">
+    <form method="post" action="audioToText.php">
       <div class="mt-8 space-y-4">
         <div>
-          <label for="hs-cover-with-gradient-form-name-1" class="sr-only">Full name</label>
+          <label for="hs-cover-with-gradient-form-name-1" class="sr-only">Link do áudio</label>
           <div class="relative">
             <input type="text" name="value" id="hs-cover-with-gradient-form-name-1" class="py-3 ps-11 pe-4 block w-full bg-white/[.03] border-white/20 text-white placeholder:text-white rounded-md text-sm focus:border-white/30 focus:ring-white/30 sm:p-4 sm:ps-11" placeholder="Link do áudio (.ogg ou .flac)">
             <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none z-20 ps-4">
@@ -65,10 +65,29 @@
             </svg>
           </button>
         </div>
-        
+
         <?php if(!empty($result)): ?>
-          <div class="grid rounded-lg bg-white">
-            <?php echo $result['text']; ?>
+          <div class="bg-white">
+            <div class="relative">
+                <ul class="mt-8 space-y-8">
+                  <!-- Chat Bubble -->
+                  <li class="max-w-4xl py-4 px-4 sm:px-6 lg:px-8 mx-auto flex gap-x-2 sm:gap-x-4">
+                    <img src="image/wal-e.jpeg" class="flex-shrink-0 w-[2.375rem] h-[2.375rem] rounded-full" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                    <div class="space-y-3">
+                      <h2 class="text-left font-medium text-gray-800 ">
+                        Aqui está sua transcrição
+                      </h2>
+                      <h2 class="text-left text-gray-800">
+                          <?php echo $result['text']; ?>
+                      </h2>
+                      <div class="space-y-1.5">
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         <?php endif; ?>
 
