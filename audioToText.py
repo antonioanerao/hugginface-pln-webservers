@@ -3,7 +3,7 @@
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.routing import Route
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+from transformers import pipeline
 import asyncio
 
 async def homepage(request):
@@ -15,24 +15,19 @@ async def homepage(request):
     return JSONResponse(output) 
 
 async def server_loop(q):
-    # Como o texto é transcrito para o inglês, é necessário traduzir para o português
-    tokenizer = AutoTokenizer.from_pretrained("unicamp-dl/translation-en-pt-t5")
-    model = AutoModelForSeq2SeqLM.from_pretrained("unicamp-dl/translation-en-pt-t5")
-    
-    pipe = pipeline(model='openai/whisper-base')
-
-    enpt_pipeline = pipeline(
-            'text2text-generation',
-            model=model,
-            tokenizer=tokenizer,
-            max_length=512,
-        )
+    pipe = pipeline(
+        "automatic-speech-recognition",
+        model="openai/whisper-large-v2",
+        generate_kwargs={"language": "br", "task": "transcribe"},
+        # cpu, cuda, ipu, xpu, mkldnn, opengl, opencl, ideep, hip, ve, fpga, ort, xla, lazy, vulkan, mps, meta, hpu, mtia, privateuseone
+        device="cpu", 
+        use_fast=True
+    )
 
     while True:
         (string, response_q) = await q.get()
-        res = enpt_pipeline("translate English to Portuguese:" + pipe(string)['text'])
-        out = res[0]['generated_text']
-        await response_q.put(out)
+        res = pipe(string, batch_size=10, return_timestamps=True, chunk_length_s=30, stride_length_s=(4, 2)) 
+        await response_q.put(res)
 
 app = Starlette(
     routes=[

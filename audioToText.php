@@ -1,7 +1,7 @@
 <p>Audio To Text</p>
 
 <form method="post" action="index.php">
-  <textarea type="text" name="value" cols="40" rows="10" placeholder="Informe o texto a ser resumido"></textarea>
+  <input type="text" name="value" placeholder="Informe o link do áudio">
   <input name="submit" type="submit" value="Enviar">
 </form>
 
@@ -29,7 +29,7 @@
       curl_close($curl);
 
       $result = json_decode($response, true);
-      echo $result;
+      echo $result['text'];
   }
 ?>
 
